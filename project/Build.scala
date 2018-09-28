@@ -19,7 +19,7 @@ object ScalajsReact {
     val Nyaya         = "0.8.1"
     val ReactJs       = "16.5.1"
     val Scala211      = "2.11.12"
-    val Scala212      = "2.12.7"
+    val Scala212      = "2.12.7-bin-7579b31-local"
     val ScalaJsDom    = "0.9.6"
     val Scalaz72      = "7.2.26"
     val SizzleJs      = "2.3.0"
@@ -47,7 +47,11 @@ object ScalajsReact {
         //scalacOptions    += "-Xlog-implicits",
         updateOptions      := updateOptions.value.withCachedResolution(true),
         incOptions         := incOptions.value.withNameHashing(true).withLogRecompileOnMacro(false),
-        triggeredMessage   := Watched.clearWhenTriggered)
+        triggeredMessage   := Watched.clearWhenTriggered,
+        libraryDependencies := libraryDependencies.value.filterNot(_.name == "scalajs-compiler"),
+        addCompilerPlugin("org.scala-js" % "scalajs-compiler" % "0.6.25" cross CrossVersion.patch),
+        resolvers += "pr" at "https://scala-ci.typesafe.com/artifactory/scala-pr-validation-snapshots/"
+      )
 
   def preventPublication: PE =
     _.settings(
@@ -171,7 +175,7 @@ object ScalajsReact {
         "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided"))
 
   def macroParadisePlugin =
-    compilerPlugin("org.scalamacros" % "paradise" % Ver.MacroParadise cross CrossVersion.full)
+    compilerPlugin("org.scalamacros" % "paradise" % Ver.MacroParadise cross CrossVersion.patch)
 
   def kindProjector =
     compilerPlugin("org.spire-math" %% "kind-projector" % Ver.KindProjector cross CrossVersion.binary)
